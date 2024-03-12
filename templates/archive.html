@@ -1,59 +1,85 @@
 {% set controller = "ArchiveController" %}
 {% extends "base/base.html" %}
 {% block head %}
-    <style type="text/css">
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-          display: none !important;
-        }
-    </style>
-
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link href="/static/css/all.css" rel="stylesheet" crossorigin="anonymous">
-    <title>Архів аукціонів</title>
-
+<style type="text/css">
+  [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+  }
+</style>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="/static/css/all.css" rel="stylesheet" crossorigin="anonymous">
+<title>Auctions archive</title>
 {% endblock %}
-
 {% block body %}
-<body>
-{% raw %}
-<div class="container">
-  <div class="list-group">
-    <nav>
+<body class="page-auctions-listing">
+  <noscript>
+    For full functionality of this site it is necessary to enable JavaScript.
+    Here are the http://www.enable-javascript.com
+    instructions how to enable JavaScript in your web browser.
+  </noscript>
+  {% raw %}
+  <div class="container" ng-cloak>
+    <div class="page-header">
+      <h1>Auctions archive</h1>
+    </div>
+    <nav ng-if="offset && startid">
       <ul class="pager">
-        <div ng-if="offset && startid">
-          <li class="next"><a href="?offset={{offset}}&startid={{startid}}">Next page<span aria-hidden="true">&rarr;</span></a></li>
-        </div>
+        <li class="next"><a href="?offset={{offset}}&startid={{startid}}">Next page<span aria-hidden="true">&rarr;</span></a></li>
         <li class="previous"><a href="/archive"><span aria-hidden="true">&larr;</span>First page</a></li>
       </ul>
     </nav>
-
-    <div
-      class="list-group-item text-center"
-      ng-repeat="auction in auctions">
-      <a ng-if="(auction.doc.procurementMethodType || '').indexOf('esco') >= 0" href="/esco-tenders/{{ auction.doc._id }}">
-        <h4 class="list-group-item-heading">
-          Тендер {{ auction.doc.tenderID }}
-        </h4>
-      </a>
-      <a ng-if="(auction.doc.procurementMethodType || '').indexOf('esco') === -1" href="/tenders/{{ auction.doc._id }}">
-        <h4 class="list-group-item-heading">
-          Тендер {{ auction.doc.tenderID }}
-        </h4>
-      </a>
-      <p class="list-group-item-text">
-        Час початку: {{ auction.doc.stages[0].start }}
-      </p>
+    <div class="panels-list">
+      <div class="panel panel-auction"
+        ng-class="{true: 'panel-default', false: 'panel-success'}[auction.doc.current_phase === 'announcement' || auction.doc.auction_type ==='default' && auction.doc.current_stage === 9]"
+        ng-repeat="auction in auctions">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <a href="/{{parseArchive(auction.doc.auction_type)}}/{{auction.doc._id}}">
+            Auction <strong>{{ auction.doc.auctionID }}</strong>
+            </a>
+          </h3>
+          <small>
+          Start Date: <strong>{{ auction.doc.stages[0].start | date:"MM/dd/yyyy 'at' HH:mm:ss" }}</strong>
+          <span ng-if="auction.doc.endDate">- End Date: <strong>{{ auction.doc.endDate | date:"MM/dd/yyyy 'at' HH:mm:ss" }}</strong></span>
+          </small>
+        </div>
+        <div class="panel-body">
+          <h4>
+            {{ auction.doc.title }}
+          </h4>
+          <p class="list-group-item-text">
+            Procurement Method Type: <strong>{{ auction.doc.procurementMethodType }}</strong>
+          </p>
+          <p>
+            Value: <strong>{{ auction.doc.value.amount }} {{ auction.doc.value.currency }}
+            </strong>
+          </p>
+          <p class="list-group-item-text text-right">
+            <a href="/{{parseArchive(auction.doc.auction_type)}}/{{auction.doc._id}}"
+              type="button"
+              class="btn"
+              ng-class="{true: 'btn-default', false: 'btn-success'}[auction.doc.current_phase === 'announcement']">
+            Auction view
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
-</div>
-{% endraw %}
-<script type=text/javascript>
-var db_url = location.protocol + '//' + location.host + '/database';
-</script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
-<script type="text/javascript" src="/static/js/vendor.js"></script>
-<script type="text/javascript" src="/static/js/archive.js"></script>
+    <nav ng-if="offset && startid">
+      <ul class="pager">
+        <li class="next" ng-if="offset && startid"><a href="?offset={{offset}}&startid={{startid}}">Next page<span aria-hidden="true">&rarr;</span></a></li>
+        <li class="previous"><a href="/archive"><span aria-hidden="true">&larr;</span>First page</a></li>
+      </ul>
+    </nav>
+  </div>
+  {% endraw %}
+  <script type=text/javascript>
+    var db_name = 'database';
+    var db_url = location.protocol + '//' + location.host + '/database';
+  </script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="/static/js/vendor.js"></script>
+  <script type="text/javascript" src="/static/js/archive.js"></script>
 </body>
-
-
 {% endblock %}
