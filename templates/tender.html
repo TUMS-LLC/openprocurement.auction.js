@@ -259,41 +259,6 @@
         <a ng-if="return_url" class="btn btn-block btn-success" href="{{ return_url }}" translate>Return to Tender</a>
       </div>
     </div>
-    <div class="container-fluid">
-      <div ng-show="((auction_doc.current_stage < 0)&&bidder_id)||follow_login_allowed" class="panel panel-default bg-warning fixed-bottom">
-        <div class="panel-body bg-warning">
-          <div ng-if="!bidder_id" class="container text-center">
-            <h4 id="wait-to-login-msg" translate ng-if="!follow_login">Login is currently closed.</h4>
-            <a ng-href="{{login_url}}" ng-if="!follow_login" translate>Please try again later.</a>
-            <a ng-href="{{login_url}}" class="btn btn-success btn-lg btn-block" ng-if="follow_login"><span  translate>Login</span></a>
-          </div>
-          <div ng-if="bidder_id && auction_doc.current_stage < 0" class="container text-center">
-            <h4 id="registered-bidder-msg" translate ng-if="!follow_login">You are registered as a bidder. Wait for the start of the auction.</h4>
-          </div>
-        </div>
-      </div>
-      <div ng-show="view_bids_form" class="bids-form panel panel-default bg-warning fixed-bottom">
-        <div class="panel-body bg-warning">
-          <div class="container">
-            <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-class="'alert-' + (alert.type || 'warning')" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></div>
-            <form id="BidsForm" class="row" name="form.BidsForm" role="form">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <label for="bid"><span translate>Your proposal</span>:</label>
-                <span ng-init="max_bid_amount()" class="max_bid_amount" id="max_bid_amount" ng-if="(auction_doc.auction_type||'default') == 'default'"><span id="max_bid_amount_price">{{ calculated_max_bid_amount|fraction }}</span> {{'or higher'|translate}}</span>
-              </div>
-              <div class="col-md-8 col-sm-8 col-xs-12">
-                <input id="{{'bid-amount-input_' + bidder_id }}" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
-              </div>
-              <div class="col-md-4 col-sm-4 col-xs-12 text-right">
-                <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
-                <button id="cancel-bid-button" type="submit" ng-if="!allow_bidding" ng-click="post_bid(-1)" class="btn btn-danger" ng-class="{'active': form.active}" translate>Cancel Bid</button>
-                <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.full_price = '');($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
   <!-- /.container -->
   <script type="text/ng-template" id="templates/growl/growl.html">
@@ -358,7 +323,7 @@
 </body>
 <script type=text/javascript>
   var db_url = location.protocol + '//' + location.host + '/database';
-  var auction_doc_id = '';
+var auction_doc_id = '{{ doc_id }}';
 </script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.10/ua-parser.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>

@@ -141,27 +141,4 @@ describe('auctionTest', function () {
     expect(scope.form.bid).toBe(0);
   });
 
-
-/*//controller 'OffCanvasController'
-//$scope.allert
-  it('should be Defined', function () {
-    expect(scope.allert).toBeDefined();
-  });
-//$scope.ok
-  it('should be Defined', function () {
-    expect(scope.ok).toBeDefined();
-  });
-//$scope.cancel
-  it('should be Defined', function () {
-    expect(scope.cancel).toBeDefined();
-  });
-//$scope.post_bid
-  it('should be Defined', function () {
-    expect(scope.post_bid).toBeDefined();
-  });*/
-
-//TODO directive 
-
-
-
 });

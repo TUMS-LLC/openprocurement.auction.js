@@ -29,6 +29,10 @@ angular.module('auction').controller('ArchiveController', [
     },
   }).then(function(resp) {
     $scope.auctions = resp.data.rows;
+    $scope.parseArchive = function(e) {
+        var type = e || "default";
+        return "texas" === type ? "texas-auctions" : "dutch" === type ? "insider-auctions" : "simple" === type || "multilot" === type || "meat" === type || "default" === type ? "auctions" : "";
+    }
       $scope.offset = false;
       if (($scope.auctions || []).length > 100) {
         $scope.offset = $scope.auctions[100].key;
